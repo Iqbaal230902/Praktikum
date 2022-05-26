@@ -1,1 +1,33 @@
+@@
+#include <iostream>
+using namespace std;
 
+struct member_t
+{
+	int id;
+    string nama;
+    string jurusan;
+    string fakultas;
+};
+
+int main()
+{
+	member_t member[] = {
+    	{1, "Wildan", "Hukum Tata Negara", "Syariah dan Hukum"},
+        {2, "Dani", "Matematika", "Sains dan Teknologi"},
+        {3, "Tono", "Biologi", "Sains dan Teknologi"},
+        {4, "toto", "Ekonomi Syariah", "Ekonomi dan Bisnis"},
+        {5, "Nita", "Fisika", "Sains dan Teknologi"}};
+       
+        
+ for(int i = 0; i < 5; i++) {
+        
+        if(i == 5) {
+            continue;
+        }       
+        
+        cout << "Saudara " << member[i].nama << " dari " << member[i].jurusan << " Lolos Seleksi \n";
+        }
+                
+}
+    
