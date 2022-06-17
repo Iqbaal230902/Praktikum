@@ -1,0 +1,31 @@
+@@
+
+#include <iostream>
+
+using namespace std;
+ 
+struct snack{
+    string nama;
+    string jumlah;
+    string berat;
+    float BARCODE;
+};
+ 
+int main(){
+ 
+    snack sc;
+ 
+    sc.nama="MI INSTAN";
+    sc.jumlah= "2 Pack";
+    sc.berat="70 gram";
+    sc.BARCODE=8968601034;
+    
+    cout<<"DATA PRODUK SWALAYAN"<<endl;
+    cout<<"--------------------"<<endl;
+    cout<<"Nama    		 : "<<sc.nama<<endl;
+    cout<<"Jumlah 			 : "<<sc.jumlah<<endl;
+    cout<<"Berat         		 :"<<sc.berat<<endl;
+    cout<<"BARCODE     		 : "<<sc.BARCODE<<endl;
+      
+    return 0;
+}
