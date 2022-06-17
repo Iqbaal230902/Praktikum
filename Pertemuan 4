@@ -1,0 +1,24 @@
+@@
+#include <iostream>  
+using namespace std;  
+
+int jumlahbarang(int hargasatuanbarang , int jumlahsatuanbarang , int diskon) {
+  int jumlahbarang = hargasatuanbarang * jumlahsatuanbarang;
+  diskon = jumlahbarang*diskon/100;
+  jumlahbarang = jumlahbarang - diskon;
+  
+  cout << "Perhitungan satuan barang"<<endl;
+  cout << "________________________________"<<endl;
+  cout <<"Harga satuan barang : Rp. "<< hargasatuanbarang<<endl;
+  cout <<"Jumlah barang yang dibeli : "<< jumlahsatuanbarang <<endl;
+  cout <<"Diskon : Rp."<< diskon<<endl;
+  cout << "________________________________"<<endl;
+  cout <<"Total harga : Rp." << jumlahbarang<<endl;
+  }
+
+int main() {  
+	
+	jumlahbarang(1500000, 2, 40);
+
+  return 0;
+}
