@@ -1,0 +1,162 @@
+@@
+#include <iostream>
+#include <conio.h>
+#include <windows.h>
+using namespace std;
+
+bool gameOver;
+const int lebarPeta = 20;
+const int panjangPeta = 20;
+int x, y, fruitX, fruitY, score;
+int ekorX[100], ekorY[100];
+int nEkor;
+enum eArah { STOP = 0, KIRI, KANAN, ATAS, BAWAH};
+eArah arh;
+
+void Setup()
+{
+	gameOver = false;
+	arh = STOP;
+	x = lebarPeta / 2;
+	y = panjangPeta / 2;
+	fruitX = rand() % lebarPeta;
+	fruitY = rand() % panjangPeta;
+	score = 0;
+}
+void Draw()
+{
+	//memangil cls untuk membuat peta
+	system("cls"); 
+	// lebar atas peta (for loop)
+	for (int i = 0; i < lebarPeta+2; i++)
+		cout << "#";
+	cout << endl;
+
+	for (int i = 0; i < panjangPeta; i++)
+	{
+		for (int j = 0; j < lebarPeta; j++)
+		{
+			if (j == 0)
+				cout << "#";
+			if (i == y && j == x)
+				cout << "O";
+			else if (i == fruitY && j == fruitX)
+				cout << "*";
+			else
+			{
+				bool print = false;
+				for (int k = 0; k < nEkor; k++)
+				{
+					if (ekorX[k] == j && ekorY[k] == i)
+					{
+						cout << "o";
+						print = true;
+					}
+				}
+				if (!print)
+					cout << " ";
+			}
+				
+
+			if (j == lebarPeta - 1)
+				cout << "#";
+		}
+		cout << endl;
+	}
+
+	for (int i = 0; i < lebarPeta+2; i++)
+		cout << "#";
+	cout << endl;
+	cout << "Score:" << score << endl;
+}
+void Control()
+{
+	if (_kbhit())
+	{
+		switch (_getch())
+		{
+		// menggerakkn snake ke kiri
+		case 'a':
+			arh = KIRI;
+			break;
+		// menggerakkn snake ke kanan
+		case 'd':
+			arh = KANAN;
+			break;
+		// menggerakkn snake ke atas
+		case 'w':
+			arh = ATAS;
+			break;
+		// menggerakkn snake ke bawah
+		case 's':
+			arh = BAWAH;
+			break;
+		// mengakhiri game
+		case 'x':
+			gameOver = true;
+			break;
+		}
+	}
+}
+void Logic()
+{
+	int prevX = ekorX[0];
+	int prevY = ekorY[0];
+	int prev2X, prev2Y;
+	ekorX[0] = x;
+	ekorY[0] = y;
+	for (int i = 1; i < nEkor; i++)
+	{
+		prev2X = ekorX[i];
+		prev2Y = ekorY[i];
+		ekorX[i] = prevX;
+		ekorY[i] = prevY;
+		prevX = prev2X;
+		prevY = prev2Y;
+	}
+	switch (arh)
+	{
+	case KIRI:
+		x--;
+		break;
+	case KANAN:
+		x++;
+		break;
+	case ATAS:
+		y--;
+		break;
+	case BAWAH:
+		y++;
+		break;
+	default:
+		break;
+	}
+	//jika (x > lebar || x < 0 || y > panjang || y < 0)
+	//	gameOver = true;
+	if (x >= lebarPeta) x = 0; else if (x < 0) x = lebarPeta - 1;
+	if (y >= panjangPeta) y = 0; else if (y < 0) y = panjangPeta - 1;
+
+	for (int i = 0; i < nEkor; i++)
+		if (ekorX[i] == x && ekorY[i] == y)
+			gameOver = true;
+
+	if (x == fruitX && y == fruitY)
+	{
+		score += 5;
+		fruitX = rand() % lebarPeta;
+		fruitY = rand() % lebarPeta;
+		nEkor++;
+	}
+}
+int main()
+{
+	Setup();
+	while (!gameOver)
+	{
+		Draw();
+		Control();
+		Logic();
+		Sleep(10); 
+	}
+	return 0;
+}
