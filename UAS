@@ -4,50 +4,65 @@
 #include <windows.h>
 using namespace std;
 
-bool gameOver;
-const int lebarPeta = 20;
-const int panjangPeta = 20;
-int x, y, fruitX, fruitY, score;
-int ekorX[100], ekorY[100];
-int nEkor;
-enum eArah { STOP = 0, KIRI, KANAN, ATAS, BAWAH};
-eArah arh;
 
+struct  {
+	bool gameOver;
+	const int width = 20;
+	const int height = 20;
+	int x;
+	int y; 
+	int fruitX;
+	int fruitY;
+	int score;
+	int tailX[100];
+	int tailY[100];
+	int nTail;	
+} config;
+
+//GameConfig config;
+
+int level = 1;
+enum eDirecton { STOP = 0, LEFT, RIGHT, UP, DOWN};
+eDirecton dir;
+
+void levelUp(int *level){
+	
+	*level = *level + 1; 
+}
 void Setup()
 {
-	gameOver = false;
-	arh = STOP;
-	x = lebarPeta / 2;
-	y = panjangPeta / 2;
-	fruitX = rand() % lebarPeta;
-	fruitY = rand() % panjangPeta;
-	score = 0;
+	
+	config.gameOver = false;
+	dir = STOP;
+	config.x = config.width / 2;
+	config.y = config.height / 2;
+	config.fruitX = rand() % config.width;
+	config.fruitY = rand() % config.height;
+	config.score = 0;
 }
 void Draw()
 {
-	//memangil cls untuk membuat peta
-	system("cls"); 
-	// lebar atas peta (for loop)
-	for (int i = 0; i < lebarPeta+2; i++)
+	system("cls"); //system("clear");
+	for (int i = 0; i < config.width+2; i++)
 		cout << "#";
 	cout << endl;
 
-	for (int i = 0; i < panjangPeta; i++)
+	for (int i = 0; i < config.height; i++)
 	{
-		for (int j = 0; j < lebarPeta; j++)
+		for (int j = 0; j < config.width; j++)
 		{
 			if (j == 0)
 				cout << "#";
-			if (i == y && j == x)
+			if (i == config.y && j == config.x)
 				cout << "O";
-			else if (i == fruitY && j == fruitX)
-				cout << "*";
+			else if (i == config.fruitY && j == config.fruitX)
+				cout << "F";
 			else
 			{
 				bool print = false;
-				for (int k = 0; k < nEkor; k++)
+				for (int k = 0; k < config.nTail; k++)
 				{
-					if (ekorX[k] == j && ekorY[k] == i)
+					if (config.tailX[k] == j && config.tailY[k] == i)
 					{
 						cout << "o";
 						print = true;
@@ -58,105 +73,106 @@ void Draw()
 			}
 				
 
-			if (j == lebarPeta - 1)
+			if (j == config.width - 1)
 				cout << "#";
 		}
 		cout << endl;
 	}
 
-	for (int i = 0; i < lebarPeta+2; i++)
+	for (int i = 0; i < config.width+2; i++)
 		cout << "#";
 	cout << endl;
-	cout << "Score:" << score << endl;
+	cout << "Score:" << config.score << endl;
+	cout << "Level:" << level << endl;
 }
-void Control()
+void Input()
 {
 	if (_kbhit())
 	{
 		switch (_getch())
 		{
-		// menggerakkn snake ke kiri
 		case 'a':
-			arh = KIRI;
+			dir = LEFT;
 			break;
-		// menggerakkn snake ke kanan
 		case 'd':
-			arh = KANAN;
+			dir = RIGHT;
 			break;
-		// menggerakkn snake ke atas
 		case 'w':
-			arh = ATAS;
+			dir = UP;
 			break;
-		// menggerakkn snake ke bawah
 		case 's':
-			arh = BAWAH;
+			dir = DOWN;
 			break;
-		// mengakhiri game
 		case 'x':
-			gameOver = true;
+			config.gameOver = true;
 			break;
 		}
 	}
 }
 void Logic()
 {
-	int prevX = ekorX[0];
-	int prevY = ekorY[0];
+	int prevX = config.tailX[0];
+	int prevY = config.tailY[0];
 	int prev2X, prev2Y;
-	ekorX[0] = x;
-	ekorY[0] = y;
-	for (int i = 1; i < nEkor; i++)
+	config.tailX[0] = config.x;
+	config.tailY[0] = config.y;
+	for (int i = 1; i < config.nTail; i++)
 	{
-		prev2X = ekorX[i];
-		prev2Y = ekorY[i];
-		ekorX[i] = prevX;
-		ekorY[i] = prevY;
+		prev2X = config.tailX[i];
+		prev2Y = config.tailY[i];
+		config.tailX[i] = prevX;
+		config.tailY[i] = prevY;
 		prevX = prev2X;
 		prevY = prev2Y;
 	}
-	switch (arh)
+	switch (dir)
 	{
-	case KIRI:
-		x--;
+	case LEFT:
+		config.x--;
 		break;
-	case KANAN:
-		x++;
+	case RIGHT:
+		config.x++;
 		break;
-	case ATAS:
-		y--;
+	case UP:
+		config.y--;
 		break;
-	case BAWAH:
-		y++;
+	case DOWN:
+		config.y++;
 		break;
 	default:
 		break;
 	}
-	//jika (x > lebar || x < 0 || y > panjang || y < 0)
+	//if (x > width || x < 0 || y > height || y < 0)
 	//	gameOver = true;
-	if (x >= lebarPeta) x = 0; else if (x < 0) x = lebarPeta - 1;
-	if (y >= panjangPeta) y = 0; else if (y < 0) y = panjangPeta - 1;
+	if (config.x >= config.width) config.x = 0; else if (config.x < 0) config.x = config.width - 1;
+	if (config.y >= config.height) config.y = 0; else if (config.y < 0) config.y = config.height - 1;
 
-	for (int i = 0; i < nEkor; i++)
-		if (ekorX[i] == x && ekorY[i] == y)
-			gameOver = true;
+	for (int i = 0; i < config.nTail; i++)
+		if (config.tailX[i] == config.x && config.tailY[i] == config.y)
+			config.gameOver = true;
 
-	if (x == fruitX && y == fruitY)
+	if (config.x == config.fruitX && config.y == config.fruitY)
 	{
-		score += 5;
-		fruitX = rand() % lebarPeta;
-		fruitY = rand() % lebarPeta;
-		nEkor++;
+		config.score += 10;
+		
+		if(config.score/10%2==0){
+			levelUp(&level);	
+		}
+
+		config.fruitX = rand() % config.width;
+		config.fruitY = rand() % config.height;
+		config.nTail++;
 	}
 }
 int main()
 {
 	Setup();
-	while (!gameOver)
+	while (!config.gameOver)
 	{
 		Draw();
-		Control();
+		Input();
 		Logic();
-		Sleep(10); 
+		Sleep(10); //sleep(10);
 	}
 	return 0;
 }
